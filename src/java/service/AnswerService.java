@@ -27,5 +27,7 @@ public interface AnswerService {
     public List<Answer> getTopicAnswer(int topicId, int userId, int lastId);
 
     public List<Answer> getSuggestAnswer(int userId, int lastId);
+    
+    public List<Answer> getSearchAnswer(int userId, int lastId, String key);
 
 }

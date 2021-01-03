@@ -13,10 +13,18 @@ import model.Question;
  * @author ADMIN
  */
 public interface QuestionService {
+
     public int getQuestionAuthor(int questionId);
+
     public boolean addQuestion(int userId, int topicId, String content);
+
     public Question getQuestion(int questionId);
+
     public List<Question> getUserQuestion(int questionid, int lastId);
+
     public List<Question> getTopicQuestion(int topicId, int lastId);
+
     public List<Question> getSuggestQuestion(int userId, int lastId);
+
+    public List<Question> getSearchQuestion(int userId, int lastId, String key);
 }

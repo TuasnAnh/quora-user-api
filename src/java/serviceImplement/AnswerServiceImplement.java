@@ -36,7 +36,7 @@ public class AnswerServiceImplement implements AnswerService {
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-        
+
         return -1;
     }
 
@@ -369,6 +369,73 @@ public class AnswerServiceImplement implements AnswerService {
                         + "join user_topic as ut on ut.tid = t.tid "
                         + "where ut.uid = ? and a.aid < ? order by a.aid desc limit ?,?");) {
             state1.setInt(1, userId);
+            if (lastId < 1) {
+                state1.setInt(2, 10000);
+            } else {
+                state1.setInt(2, lastId);
+            }
+            state1.setInt(3, 0);
+            state1.setInt(4, 5);
+            ResultSet rs = state1.executeQuery();
+
+            List<Answer> answers = new ArrayList<>();
+            while (rs.next()) {
+                int answerId = rs.getInt("aid");
+                Answer answer = new Answer(answerId, rs.getInt("uid"), rs.getTimestamp("answertime").toString(), rs.getString("credential"), rs.getInt("qid"), rs.getString("content"), rs.getInt("upvotes"), rs.getInt("downvotes"), rs.getInt("tid"), rs.getString("topicname"), rs.getString("url"), rs.getString("last_name") + " " + rs.getString("first_name"));
+
+                PreparedStatement state2 = connection.prepareStatement("select * from bookmark where aid = ?");
+                state2.setInt(1, answerId);
+                ResultSet rs2 = state2.executeQuery();
+                if (rs2.next()) {
+                    answer.setIsBookmarked(true);
+                } else {
+                    answer.setIsBookmarked(false);
+                }
+
+                PreparedStatement state3 = connection.prepareStatement("select relationship from user_answer where aid = ? and uid = ?");
+                state3.setInt(1, answerId);
+                state3.setInt(2, userId);
+                ResultSet rs3 = state3.executeQuery();
+                if (rs3.next()) {
+                    if ("UPVOTE".equals(rs3.getString("relationship"))) {
+                        answer.setIsUpvote(true);
+                        answer.setIsDownvote(false);
+                    } else {
+                        answer.setIsUpvote(false);
+                        answer.setIsDownvote(true);
+                    }
+                } else {
+                    answer.setIsUpvote(false);
+                    answer.setIsDownvote(false);
+                }
+
+                PreparedStatement state4 = connection.prepareStatement("select content from question where qid = ?");
+                state4.setInt(1, answer.getQuestionId());
+                ResultSet rs4 = state4.executeQuery();
+                rs4.next();
+                answer.setQuestion(rs4.getString("content"));
+
+                answers.add(answer);
+            }
+
+            return answers;
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return null;
+    }
+
+    @Override
+    public List<Answer> getSearchAnswer(int userId, int lastId, String key) {
+        try (Connection connection = JDBCConnection.getConnection();
+                PreparedStatement state1 = connection.prepareStatement("select a.*, u.*, t.tid, t.topicname from answer as a "
+                        + "join question as q on a.qid = q.qid "
+                        + "join topic as t on q.tid = t.tid "
+                        + "join user as u on a.uid = u.uid "
+                        + "where a.content like ? and a.aid < ? order by a.aid desc limit ?,?");) {
+            state1.setString(1, "%" + key + "%");
             if (lastId < 1) {
                 state1.setInt(2, 10000);
             } else {

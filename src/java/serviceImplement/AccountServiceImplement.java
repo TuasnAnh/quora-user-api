@@ -48,7 +48,7 @@ public class AccountServiceImplement implements AccountService {
     public int insertUser(String firstName, String lastName, String email, String password) {
 
         try (Connection connection = JDBCConnection.getConnection();
-                PreparedStatement state1 = connection.prepareStatement("insert into user (email, password, first_name, last_name, roll, register_date) values (?, ?, ?, ?, ?, ?);");
+                PreparedStatement state1 = connection.prepareStatement("insert into user (email, password, first_name, last_name, role, register_date) values (?, ?, ?, ?, ?, ?);");
                 PreparedStatement state2 = connection.prepareStatement("SELECT LAST_INSERT_ID();");) {
 
             Date date = new java.util.Date();
@@ -85,13 +85,13 @@ public class AccountServiceImplement implements AccountService {
 
     @Override
     public String getUserRoll(String email) {
-        try (Connection connection = JDBCConnection.getConnection(); PreparedStatement state = connection.prepareStatement("select roll from user where email = ?");) {
+        try (Connection connection = JDBCConnection.getConnection(); PreparedStatement state = connection.prepareStatement("select role from user where email = ?");) {
             state.setString(1, email);
 
             ResultSet rs = state.executeQuery();
 
             if (rs.next()) {
-                return rs.getString("roll");
+                return rs.getString("role");
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -110,7 +110,7 @@ public class AccountServiceImplement implements AccountService {
             if (rs.next()) {
                 if (BCrypt.checkpw(password, rs.getString("password"))) {
                     if (rs.getString("status").equals("VERIFIED")) {
-                        return new User(rs.getInt("uid"), email, rs.getString("roll"), "login success");
+                        return new User(rs.getInt("uid"), email, rs.getString("role"), "login success");
                     } else if (rs.getString("status").equals("NOT_VERIFY")) {
                         System.out.println("Email not verified");
                         return new User("account not verified");

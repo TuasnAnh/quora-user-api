@@ -30,7 +30,7 @@ public class QuestionServiceImplement implements QuestionService {
             state1.setInt(1, questionId);
             ResultSet rs = state1.executeQuery();
             rs.next();
-            
+
             return rs.getInt("uid");
 
         } catch (SQLException ex) {
@@ -172,4 +172,37 @@ public class QuestionServiceImplement implements QuestionService {
         return null;
 
     }
+
+    @Override
+    public List<Question> getSearchQuestion(int userId, int lastId, String key) {
+        try (Connection connection = JDBCConnection.getConnection();
+                PreparedStatement state1 = connection.prepareStatement("select q.*, q.uid, t.tid, t.topicname from question as q "
+                        + "join topic as t on q.tid = t.tid "
+                        + "where q.content like ? and q.qid < ? order by q.qid desc limit ?, ?;");) {
+
+            state1.setString(1, "%" + key + "%");
+            if (lastId < 1) {
+                state1.setInt(2, 10000);
+            } else {
+                state1.setInt(2, lastId);
+            }
+            state1.setInt(3, 0);
+            state1.setInt(4, 10);
+
+            ResultSet rs = state1.executeQuery();
+
+            List<Question> questions = new ArrayList<>();
+            while (rs.next()) {
+                Question question = new Question(rs.getInt("qid"), rs.getInt("uid"), rs.getInt("tid"), rs.getString("content"), rs.getTimestamp("qtime"), rs.getInt("totalanswer"), rs.getString("topicname"));
+                questions.add(question);
+            }
+
+            return questions;
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
 }

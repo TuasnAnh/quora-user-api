@@ -111,4 +111,20 @@ public class QuestionController {
             response.getWriter().write(json);
         }
     }
+
+    public static void getSearchQuestion(HttpServletRequest request, HttpServletResponse response, JsonObject data) throws IOException {
+        if (VerifyRequest.verifyUserRequest(request, response, accountService)) {
+            HttpSession session = request.getSession();
+            int userId = accountService.getUserId(session.getAttribute("email").toString());
+            int lastId = data.get("lastId").getAsInt();
+            String key = data.get("key").getAsString();
+
+            List<Question> questions = questionService.getSearchQuestion(userId, lastId, key);
+
+            String json = new Gson().toJson(questions);
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write(json);
+        }
+    }
 }
