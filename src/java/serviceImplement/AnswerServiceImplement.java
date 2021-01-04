@@ -181,8 +181,9 @@ public class AnswerServiceImplement implements AnswerService {
                 int answerId = rs.getInt("aid");
                 Answer answer = new Answer(answerId, rs.getInt("uid"), rs.getTimestamp("answertime").toString(), rs.getString("credential"), rs.getInt("qid"), rs.getString("content"), rs.getInt("upvotes"), rs.getInt("downvotes"), rs.getInt("tid"), rs.getString("topicname"), rs.getString("url"), rs.getString("last_name") + " " + rs.getString("first_name"));
 
-                PreparedStatement state2 = connection.prepareStatement("select * from bookmark where aid = ?");
+                PreparedStatement state2 = connection.prepareStatement("select * from bookmark where aid = ? and uid = ?");
                 state2.setInt(1, answerId);
+                state2.setInt(2, userId);
                 ResultSet rs2 = state2.executeQuery();
                 if (rs2.next()) {
                     answer.setIsBookmarked(true);
@@ -248,8 +249,9 @@ public class AnswerServiceImplement implements AnswerService {
                 int answerId = rs.getInt("aid");
                 Answer answer = new Answer(answerId, rs.getInt("uid"), rs.getTimestamp("answertime").toString(), rs.getString("credential"), rs.getInt("qid"), rs.getString("content"), rs.getInt("upvotes"), rs.getInt("downvotes"), rs.getInt("tid"), rs.getString("topicname"), rs.getString("url"), rs.getString("last_name") + " " + rs.getString("first_name"));
 
-                PreparedStatement state2 = connection.prepareStatement("select * from bookmark where aid = ?");
+                PreparedStatement state2 = connection.prepareStatement("select * from bookmark where aid = ? and uid = ?");
                 state2.setInt(1, answerId);
+                state2.setInt(2, currentUser);
                 ResultSet rs2 = state2.executeQuery();
                 if (rs2.next()) {
                     answer.setIsBookmarked(true);
@@ -315,8 +317,9 @@ public class AnswerServiceImplement implements AnswerService {
                 int answerId = rs.getInt("aid");
                 Answer answer = new Answer(answerId, rs.getInt("uid"), rs.getTimestamp("answertime").toString(), rs.getString("credential"), rs.getInt("qid"), rs.getString("content"), rs.getInt("upvotes"), rs.getInt("downvotes"), rs.getInt("tid"), rs.getString("topicname"), rs.getString("url"), rs.getString("last_name") + " " + rs.getString("first_name"));
 
-                PreparedStatement state2 = connection.prepareStatement("select * from bookmark where aid = ?");
+                PreparedStatement state2 = connection.prepareStatement("select * from bookmark where aid = ? and uid = ?");
                 state2.setInt(1, answerId);
+                state2.setInt(2, userId);
                 ResultSet rs2 = state2.executeQuery();
                 if (rs2.next()) {
                     answer.setIsBookmarked(true);
@@ -383,8 +386,9 @@ public class AnswerServiceImplement implements AnswerService {
                 int answerId = rs.getInt("aid");
                 Answer answer = new Answer(answerId, rs.getInt("uid"), rs.getTimestamp("answertime").toString(), rs.getString("credential"), rs.getInt("qid"), rs.getString("content"), rs.getInt("upvotes"), rs.getInt("downvotes"), rs.getInt("tid"), rs.getString("topicname"), rs.getString("url"), rs.getString("last_name") + " " + rs.getString("first_name"));
 
-                PreparedStatement state2 = connection.prepareStatement("select * from bookmark where aid = ?");
+                PreparedStatement state2 = connection.prepareStatement("select * from bookmark where aid = ? and uid = ?");
                 state2.setInt(1, answerId);
+                state2.setInt(2, userId);
                 ResultSet rs2 = state2.executeQuery();
                 if (rs2.next()) {
                     answer.setIsBookmarked(true);
@@ -450,8 +454,9 @@ public class AnswerServiceImplement implements AnswerService {
                 int answerId = rs.getInt("aid");
                 Answer answer = new Answer(answerId, rs.getInt("uid"), rs.getTimestamp("answertime").toString(), rs.getString("credential"), rs.getInt("qid"), rs.getString("content"), rs.getInt("upvotes"), rs.getInt("downvotes"), rs.getInt("tid"), rs.getString("topicname"), rs.getString("url"), rs.getString("last_name") + " " + rs.getString("first_name"));
 
-                PreparedStatement state2 = connection.prepareStatement("select * from bookmark where aid = ?");
+                PreparedStatement state2 = connection.prepareStatement("select * from bookmark where aid = ? and uid = ?");
                 state2.setInt(1, answerId);
+                state2.setInt(2, userId);
                 ResultSet rs2 = state2.executeQuery();
                 if (rs2.next()) {
                     answer.setIsBookmarked(true);

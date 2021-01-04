@@ -10,5 +10,5 @@ package env;
  * @author ADMIN
  */
 public class env {
-    public static String API_URL = "http://localhost:38940/quora-api";
+    public static String API_URL = "http://localhost:38940/quora-user-api";
 }
